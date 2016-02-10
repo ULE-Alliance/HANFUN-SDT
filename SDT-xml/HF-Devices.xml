@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- This is a draft of a mapping of some HAN-FUN profiles into devices represented in HGI's SDT -->
+<!--
+Copyright [2016] ULE Alliance
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<Domain xmlns:xi="http://www.w3.org/2001/XInclude"
+        xmlns="http://homegatewayinitiative.org/xml/dal/3.0"
+        id="ule.hanfun.devices">
+
+   <Imports>
+      <xi:include href="./HF-Interfaces.xml" parse="xml" />
+      <!-- Commented out to avoid validation errors due to the non-existent domain ule.hanfun.core
+       <xi:include href="./HF-Core.xml" parse="xml" /> -->
+   </Imports>
+
+   <Devices>
+
+<!-- AC Outlet -->
+      <Device id="AC_Outlet">
+
+         <Doc>
+            An <em>AC Outlet</em>.
+         </Doc>
+
+<!-- The properties defined in this doc are just a copy from the previous drafts, however they
+could probably be revised to either emphasize some of HAN-FUN's Device Information attributes or,
+like suggested in the SDT documentation, store manufacturer information like "Manufacturing Site",
+"Date of Manufacture", "Certification Code", "Energy Label Code", "compatible LAN technology",
+"URL for the device handbook", "physical limits of operation environments", etc
+-->
+         <Properties>
+            <Property name="Name" optional="true">
+               <Doc>Original value: AC_Outlet.unit.0</Doc>
+               <SimpleType type="string" />
+            </Property>
+
+            <Property name="Vendor" optional="true">
+               <Doc>Original value: ULE Alliance</Doc>
+               <SimpleType type="string" />
+            </Property>
+         </Properties>
+
+
+<!-- Definition of HAN-FUN's unit 0 -->
+<!-- Commented out to avoid validation errors due to the non-existent domain ule.hanfun.core
+         <Modules>
+            <Module name="Attribute's General Actions">
+               <extends domain="ule.hanfun.core" class="Attribute's General Actions"/>
+               <Doc>
+                  HAN-FUN base set of general requests that operate over attributes, either
+                  individually or as a pack. These requests may or may not involve a response.
+               </Doc>
+            </Module>
+
+            <Module name="Device Management">
+               <extends domain="ule.hanfun.core" class="Device Management"/>
+               <Doc>
+                  Fundamental service responsible for device registration and discovery.
+               </Doc>
+            </Module>
+
+            <Module name="Device Information">
+               <extends domain="ule.hanfun.core" class="Device Information"/>
+               <Doc>
+                  Fundamental service that defines information that any HF device can/must provide.
+               </Doc>
+            </Module>
+
+            <Module name="Attribute Reporting">
+               <extends domain="ule.hanfun.core" class="Attribute Reporting"/>
+               <Doc>
+                  Service that allows a unit to receive automatic notifications about other units
+                  or device's attributes whenever an event triggers.
+               </Doc>
+            </Module>
+         </Modules>
+-->
+
+<!-- Definition of other units -->
+         <SubDevices>
+            <SubDevice id="unit.1">
+
+               <Doc>
+                  The <em>AC Outlet</em> specifies a unit type that receives a command to turn
+                  on/off some physical bi-stable AC actuator attached to the device.
+               </Doc>
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: AC_Outlet.unit.1</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+               <Modules>
+                  <Module name="Power Switch">
+                     <extends domain="ule.hanfun.interfaces" class="0x200 - On/Off Server Interface"/>
+                  </Module>
+               </Modules>
+            </SubDevice>
+         </SubDevices>
+      </Device>
+
+<!-- AC Outlet with Simple Power Metering-->
+      <Device id="Smart_Plug">
+
+         <Doc>
+            A <em>Smart Plug</em> that besides On/Off functionality is able to provide energy
+            consumption readings.
+         </Doc>
+
+         <Properties>
+            <Property name="Name" optional="true">
+               <Doc>Original value: Smart_Plug.unjit.0</Doc>
+               <SimpleType type="string" />
+            </Property>
+
+            <Property name="Vendor" optional="true">
+               <Doc>Original value: ULE Alliance</Doc>
+               <SimpleType type="string" />
+            </Property>
+         </Properties>
+
+
+<!-- Definition of HAN-FUN's unit 0 -->
+<!-- Commented out to avoid validation errors due to the non-existent domain ule.hanfun.core
+         <Modules>
+            <Module name="Attribute's General Actions">
+               <extends domain="ule.hanfun.core" class="Attribute's General Actions"/>
+               <Doc>
+                  HAN-FUN base set of general requests that operate over attributes, either
+                  individually or as a pack. These requests may or may not involve a response.
+               </Doc>
+            </Module>
+
+            <Module name="Device Management">
+               <extends domain="ule.hanfun.core" class="Device Management"/>
+               <Doc>
+                  Fundamental service responsible for device registration and discovery.
+               </Doc>
+            </Module>
+
+            <Module name="Device Information">
+               <extends domain="ule.hanfun.core" class="Device Information"/>
+               <Doc>
+                  Fundamental service that defines information that any HF device can/must provide.
+               </Doc>
+            </Module>
+
+            <Module name="Attribute Reporting">
+               <extends domain="ule.hanfun.core" class="Attribute Reporting"/>
+               <Doc>
+                  Service that allows a unit to receive automatic notifications about other units
+                  or device's attributes whenever an event triggers.
+               </Doc>
+            </Module>
+         </Modules>
+-->
+
+
+<!-- Definition of other units -->
+         <SubDevices>
+            <SubDevice id="unit.1">
+
+               <Doc>
+                  The <em>AC Outlet with Simple Power Metering</em> specifies a unit type that
+                  receives a command to turn on/off some physical bi-stable AC actuator attached to
+                  the device. It is also capable of doing and providing Energy consumption
+                  measurements and accepts the <em>Measurement Reset</em> command.
+               </Doc>
+
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Smart_Plug.unit.1</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+
+               <Modules>
+                  <Module name="Power Switch">
+                     <extends domain="ule.hanfun.interfaces" class="0x200 - On/Off Server Interface"/>
+                  </Module>
+
+                  <Module name="Energy Consumption Measurements">
+                     <extends domain="ule.hanfun.interfaces" class="0x300 - Simple Power Metering Server Interface"/>
+
+                     <Data>
+                        <DataPoint  name="Energy"
+                                    optional="false"
+                                    writable="false"
+                                    readable="true"
+                                    eventable="true">
+
+                                    <Doc>
+                                       <em>Energy</em> stores energy consumption since device power up
+                                       or since a measurement reset. The stored value has the basic
+                                       unit of Watts/Hour that may be affected by a precision code.
+                                    </Doc>
+
+                                    <DataType>
+                                       <SimpleType type="integer" />
+                                    </DataType>
+                        </DataPoint>
+
+                        <DataPoint  name="Energy at Last Reset"
+                                    optional="false"
+                                    writable="false"
+                                    readable="true"
+                                    eventable="true">
+
+                                    <Doc>
+                                       <em>Energy at Last Reset</em> stores the <em>Energy</em> value
+                                       at the instant a measurement reset occurs. The stored value has
+                                       the basic unit of Watts/Hour that may be affected by a precision
+                                       code.
+                                    </Doc>
+
+                                    <DataType>
+                                       <SimpleType type="integer" />
+                                    </DataType>
+                        </DataPoint>
+
+                        <DataPoint  name="Time at Last Reset"
+                                    optional="false"
+                                    writable="false"
+                                    readable="true"
+                                    eventable="true">
+
+                                    <Doc>
+                                       <em>Time at Last Reset</em> stores the time value (from device
+                                       uptime or UTC) at the instant a measurement reset occurs. The
+                                       stored value has the basic unit of Seconds.
+                                    </Doc>
+
+                                    <DataType>
+                                       <SimpleType type="integer" />
+                                    </DataType>
+                        </DataPoint>
+                     </Data>
+                  </Module>
+               </Modules>
+            </SubDevice>
+         </SubDevices>
+      </Device>
+
+<!-- Simple Temperature Sensor -->
+      <Device id="Temperature_Sensor">
+
+         <Doc>
+            A <em>Temperature Sensor</em>.
+         </Doc>
+
+
+         <Properties>
+            <Property name="Name" optional="true">
+               <Doc>Original value: Temperature_Sensor.unit.0</Doc>
+               <SimpleType type="string" />
+            </Property>
+
+            <Property name="Vendor" optional="true">
+               <Doc>Original value: ULE Alliance</Doc>
+               <SimpleType type="string" />
+            </Property>
+         </Properties>
+
+<!-- Definition of HAN-FUN's unit 0 -->
+<!-- Commented out to avoid validation errors due to the non-existent domain ule.hanfun.core
+         <Modules>
+            <Module name="Attribute's General Actions">
+               <extends domain="ule.hanfun.core" class="Attribute's General Actions"/>
+               <Doc>
+                  HAN-FUN base set of general requests that operate over attributes, either
+                  individually or as a pack. These requests may or may not involve a response.
+               </Doc>
+            </Module>
+
+            <Module name="Device Management">
+               <extends domain="ule.hanfun.core" class="Device Management"/>
+               <Doc>
+                  Fundamental service responsible for device registration and discovery.
+               </Doc>
+            </Module>
+
+            <Module name="Device Information">
+               <extends domain="ule.hanfun.core" class="Device Information"/>
+               <Doc>
+                  Fundamental service that defines information that any HF device can/must provide.
+               </Doc>
+            </Module>
+
+            <Module name="Attribute Reporting">
+               <extends domain="ule.hanfun.core" class="Attribute Reporting"/>
+               <Doc>
+                  Service that allows a unit to receive automatic notifications about other units
+                  or device's attributes whenever an event triggers.
+               </Doc>
+            </Module>
+         </Modules>
+-->
+
+
+<!-- Definition of other units -->
+         <SubDevices>
+            <SubDevice id="unit.1">
+
+               <Doc>
+                  The <em>Simple Temperature Sensor</em> specifies a unit type that is able to
+                  provide temperature readings.
+               </Doc>
+
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Temperature_Sensor.unit.1</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+               <Modules>
+                  <Module name="Simple Temperature Sensor">
+                     <extends domain="ule.hanfun.interfaces" class="0x301 - Simple Temperature Server Interface"/>
+                  </Module>
+               </Modules>
+            </SubDevice>
+         </SubDevices>
+      </Device>
+
+<!-- Window Sensor -->
+      <Device id="Window_Sensor">
+
+         <Doc>
+            A <em>Window Sensor</em>.
+         </Doc>
+
+
+         <Properties>
+            <Property name="Name" optional="true">
+               <Doc>Original value: Window_Sensor.unit.0</Doc>
+               <SimpleType type="string" />
+            </Property>
+
+            <Property name="Vendor" optional="true">
+               <Doc>Original value: ULE Alliance</Doc>
+               <SimpleType type="string" />
+            </Property>
+         </Properties>
+
+<!-- Definition of HAN-FUN's unit 0 -->
+<!-- Commented out to avoid validation errors due to the non-existent domain ule.hanfun.core
+         <Modules>
+            <Module name="Attribute's General Actions">
+               <extends domain="ule.hanfun.core" class="Attribute's General Actions"/>
+               <Doc>
+                  HAN-FUN base set of general requests that operate over attributes, either
+                  individually or as a pack. These requests may or may not involve a response.
+               </Doc>
+            </Module>
+
+            <Module name="Device Management">
+               <extends domain="ule.hanfun.core" class="Device Management"/>
+               <Doc>
+                  Fundamental service responsible for device registration and discovery.
+               </Doc>
+            </Module>
+
+            <Module name="Device Information">
+               <extends domain="ule.hanfun.core" class="Device Information"/>
+               <Doc>
+                  Fundamental service that defines information that any HF device can/must provide.
+               </Doc>
+            </Module>
+
+            <Module name="Attribute Reporting">
+               <extends domain="ule.hanfun.core" class="Attribute Reporting"/>
+               <Doc>
+                  Service that allows a unit to receive automatic notifications about other units
+                  or device's attributes whenever an event triggers.
+               </Doc>
+            </Module>
+         </Modules>
+-->
+
+
+<!-- Definition of other units -->
+         <SubDevices>
+            <SubDevice id="unit.1">
+
+               <Doc>
+                  The <em>Window Open/Close Detector</em> specifies a unit type that sends an alert
+                  when it detects that a window opened or closed. The alert message is sent as soon
+                  as the window state changes.
+               </Doc>
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Window_Sensor.unit.1</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+               <Modules>
+                  <Module name="Window Open/Close Detector">
+                     <extends domain="ule.hanfun.interfaces" class="0x100 - Alert Server Interface"/>
+                        <Doc>
+                           <em>Window State</em> bit is set to "true" if the window is open
+                           or set to "false" if the window is closed.
+                        </Doc>
+                  </Module>
+               </Modules>
+            </SubDevice>
+         </SubDevices>
+      </Device>
+
+
+<!-- Power Plug Bar -->
+      <Device id="Power_Plug_Bar">
+
+         <Doc>
+            A <em>Power Plug Bar</em> with 5 (five) independent outlets.
+         </Doc>
+
+         <Properties>
+            <Property name="Name" optional="true">
+               <Doc>Original value: Power_Plug_Bar</Doc>
+               <SimpleType type="string" />
+            </Property>
+
+            <Property name="Vendor" optional="true">
+               <Doc>Original value: ULE Alliance</Doc>
+               <SimpleType type="string" />
+            </Property>
+         </Properties>
+
+<!-- Definition of HAN-FUN's unit 0 -->
+<!-- Commented out to avoid validation errors due to the non-existent domain ule.hanfun.core
+         <Modules>
+            <Module name="Attribute's General Actions">
+               <extends domain="ule.hanfun.core" class="Attribute's General Actions"/>
+               <Doc>
+                  HAN-FUN base set of general requests that operate over attributes, either
+                  individually or as a pack. These requests may or may not involve a response.
+               </Doc>
+            </Module>
+
+            <Module name="Device Management">
+               <extends domain="ule.hanfun.core" class="Device Management"/>
+               <Doc>
+                  Fundamental service responsible for device registration and discovery.
+               </Doc>
+            </Module>
+
+            <Module name="Device Information">
+               <extends domain="ule.hanfun.core" class="Device Information"/>
+               <Doc>
+                  Fundamental service that defines information that any HF device can/must provide.
+               </Doc>
+            </Module>
+
+            <Module name="Attribute Reporting">
+               <extends domain="ule.hanfun.core" class="Attribute Reporting"/>
+               <Doc>
+                  Service that allows a unit to receive automatic notifications about other units
+                  or device's attributes whenever an event triggers.
+               </Doc>
+            </Module>
+         </Modules>
+-->
+
+
+<!-- Definition of other units -->
+         <SubDevices>
+            <SubDevice id="unit.1">
+
+               <Doc>
+                  The <em>AC Outlet</em> specifies a unit type that receives a command to turn
+                  on/off some physical bi-stable AC actuator attached to the device.
+               </Doc>
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Power_Plug_Bar.unit.1</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+               <Modules>
+                  <Module name="Power Switch">
+                     <extends domain="ule.hanfun.interfaces" class="0x200 - On/Off Server Interface"/>
+                  </Module>
+               </Modules>
+            </SubDevice>
+
+            <SubDevice id="unit.2">
+
+               <Doc>
+                  The <em>AC Outlet</em> specifies a unit type that receives a command to turn
+                  on/off some physical bi-stable AC actuator attached to the device.
+               </Doc>
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Power_Plug_Bar.unit.2</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+               <Modules>
+                  <Module name="Power Switch">
+                     <extends domain="ule.hanfun.interfaces" class="0x200 - On/Off Server Interface"/>
+                  </Module>
+               </Modules>
+            </SubDevice>
+
+            <SubDevice id="unit.3">
+
+               <Doc>
+                  The <em>AC Outlet</em> specifies a unit type that receives a command to turn
+                  on/off some physical bi-stable AC actuator attached to the device.
+               </Doc>
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Power_Plug_Bar.unit.3</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+
+               <Modules>
+                  <Module name="Power Switch">
+                     <extends domain="ule.hanfun.interfaces" class="0x200 - On/Off Server Interface"/>
+                  </Module>
+               </Modules>
+            </SubDevice>
+
+            <SubDevice id="unit.4">
+
+               <Doc>
+                  The <em>AC Outlet</em> specifies a unit type that receives a command to turn
+                  on/off some physical bi-stable AC actuator attached to the device.
+               </Doc>
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Power_Plug_Bar.unit.4</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+            <Modules>
+               <Module name="Power Switch">
+                  <extends domain="ule.hanfun.interfaces" class="0x200 - On/Off Server Interface"/>
+               </Module>
+            </Modules>
+            </SubDevice>
+
+            <SubDevice id="unit.5">
+
+               <Doc>
+                  The <em>AC Outlet</em> specifies a unit type that receives a command to turn
+                  on/off some physical bi-stable AC actuator attached to the device.
+               </Doc>
+
+               <Properties>
+                  <Property name="Name" optional="true">
+                     <Doc>Original value: Power_Plug_Bar.unit.5</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+
+                  <Property name="Vendor" optional="true">
+                     <Doc>Original value: ULE Alliance</Doc>
+                     <SimpleType type="string" />
+                  </Property>
+               </Properties>
+
+               <Modules>
+                  <Module name="Power Switch">
+                     <extends domain="ule.hanfun.interfaces" class="0x200 - On/Off Server Interface"/>
+                  </Module>
+               </Modules>
+
+            </SubDevice>
+         </SubDevices>
+      </Device>
+   </Devices>
+</Domain>

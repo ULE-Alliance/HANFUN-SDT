@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- This is a draft of a mapping of some HAN-FUN interfaces into an HGI SDT representation -->
+<!--
+Copyright [2016] ULE Alliance
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<Domain xmlns:xi="http://www.w3.org/2001/XInclude"
+        xmlns="http://homegatewayinitiative.org/xml/dal/3.0"
+        id="ule.hanfun.interfaces">
+
+   <Modules>
+
+<!-- Alert Interface: SERVER -->
+<!-- We will really need some other way of indicating an interface's role -->
+      <ModuleClass name="0x100 - Alert Server Interface">
+         <Doc>
+            The <em>Alert Server</em> interface can be used by any device that requires sending an
+            alert. The alert type will be specified by the unit type where the interface is
+            implemented, for example for a smoke detector the alert will indicate the presence of
+            smoke, but for a motion detector the same alert will indicate that movement exists on
+            the area covered by it.
+
+            This interface can support multiple alerts, from 1 up to 32.
+         </Doc>
+
+         <Actions>
+            <Action name="Status">
+               <Doc>
+                  This command, sent to a client implementation of the Alert interface, indicates
+                  the current state of all alerts.
+               </Doc>
+
+               <Args>
+                  <Arg name="Unit Type">
+                     <Doc>
+                        The unique identifier of the unit type implementing this server interface.
+                     </Doc>
+                     <DataType>
+                        <SimpleType type="integer"/>
+                     </DataType>
+                  </Arg>
+
+                  <Arg name="State Attribute">
+                     <Doc>
+                        The value of <em>State</em>.
+                     </Doc>
+                     <DataType>
+                        <Array>
+                           <DataType>
+                              <SimpleType type="boolean"/>
+                              <Constraints>
+                                 <Constraint name="maxStates" type="integer" value="32">
+                                    <Doc>The maximum number of independent states is fixed at 32.</Doc>
+                                 </Constraint>
+                              </Constraints>
+                           </DataType>
+                        </Array>
+                     </DataType>
+                  </Arg>
+               </Args>
+            </Action>
+         </Actions>
+
+         <Data>
+            <DataPoint name="State"
+                       optional="false"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+               <Doc>
+                  <em>State</em> indicates the state of an alert. A bit set to "true"
+                  indicates an active alert, a bit set to "false" indicates idle.
+               </Doc>
+
+               <DataType>
+                  <Array>
+                     <DataType>
+                        <SimpleType type="boolean"/>
+                        <Constraints>
+                           <Constraint name="maxStates" type="integer" value="32">
+                              <Doc>The maximum number of independent states is fixed at 32.</Doc>
+                           </Constraint>
+                        </Constraints>
+                     </DataType>
+                  </Array>
+               </DataType>
+            </DataPoint>
+
+            <DataPoint name="Enable"
+                       optional="false"
+                       writable="true"
+                       readable="true"
+                       eventable="true">
+
+               <Doc>
+                  <em>Enable</em> indicates if an alert is enabled or disabled. A disabled alert
+                  will never trigger. A bit set to "true" indicates alert is enabled, a bit set to
+                  "false" indicates alert is disabled.
+               </Doc>
+
+               <DataType>
+                  <Array>
+                     <DataType>
+                        <SimpleType type="boolean"/>
+                        <Constraints>
+                           <Constraint name="maxEnables" type="integer" value="32">
+                              <Doc>The maximum number of independent enables is fixed at 32.</Doc>
+                           </Constraint>
+                        </Constraints>
+                     </DataType>
+                  </Array>
+               </DataType>
+            </DataPoint>
+         </Data>
+      </ModuleClass>
+
+<!-- Alert Interface: CLIENT -->
+      <ModuleClass name="0x100 - Alert Client Interface">
+         <Doc>
+            The <em>Alert Client</em> interface can be used by any device that requires receiving an
+            alert.
+         </Doc>
+
+      </ModuleClass>
+
+<!-- On/Off Interface: SERVER-->
+      <ModuleClass name="0x200 - On/Off Server Interface">
+         <Doc>
+            The <em>On/Off Server</em> interface enables a device to have some feature
+            (light, relay, LED, etc) locally turned on/off.
+         </Doc>
+
+         <Data>
+            <DataPoint name="State"
+                       optional="false"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                       <Doc>
+                           <em>State</em> indicates the current On (when true)/Off (when false) state.
+                       </Doc>
+
+                       <DataType>
+                           <SimpleType type="boolean"/>
+                       </DataType>
+            </DataPoint>
+         </Data>
+      </ModuleClass>
+
+<!-- On/Off Interface CLIENT-->
+      <ModuleClass name="0x200 - On/Off Client Interface">
+         <Doc>
+            The <em>On/Off Client</em> interface enables a device to remotely turn on/off have
+            some feature. It allows, for example, turning on or off a siren, an LED or a relay.
+         </Doc>
+
+         <Actions>
+               <Action name="On">
+                  <Doc>
+                     This command, sent to a server implementation of the On-Off interface,
+                     turns some device feature on.
+                  </Doc>
+               </Action>
+
+               <Action name="Off">
+                  <Doc>
+                     This command, sent to a server implementation of the On-Off interface,
+                     turns some device feature off.
+                  </Doc>
+               </Action>
+
+               <Action name="Toggle">
+                  <Doc>
+                     This command, sent to a server implementation of the On-Off interface, toggles
+                     the state of some device feature. If the feature was set to On, it will be
+                     turned Off and vice-versa.
+                  </Doc>
+               </Action>
+         </Actions>
+      </ModuleClass>
+
+<!-- Simple Power Metering Interface: SERVER -->
+      <ModuleClass name="0x300 - Simple Power Metering Server Interface">
+         <Doc>
+            The <em>Simple Power Metering Server</em> interface enables a device to realize
+            measurements of electric quantities that are made available for other devices to read.
+            All attributes are optional so is up to the device definition to define which ones are
+            implemneted.
+         </Doc>
+
+         <Actions>
+            <Action name="Report" optional="true">
+               <Doc>
+                  This optional command, sent to a client implementation of the Simple Power
+                  Metering interface, will send the value of all implemented attributes with the
+                  periodicity defined by <em>Report Interval</em> attribute.
+               </Doc>
+               <Args>
+                  <Arg name="Number of Attributes">
+                     <Doc>
+                        Number of attributes, present in the command, for which values are sent.
+                     </Doc>
+                     <DataType>
+                        <SimpleType type="integer"/>
+                        <Constraints>
+                           <Constraint name="minValue" type="integer" value="0x00"/>
+                           <Constraint name="maxValue" type="integer" value="0xFF"/>
+                        </Constraints>
+                     </DataType>
+                  </Arg>
+                  <Arg name="Pair ID-Value">
+                     <Doc>
+                        Pair of values in the form Attribute ID - Attribute Value.
+                     </Doc>
+                     <DataType>
+                        <Struct>
+                           <DataType name="Attribute ID">
+                              <Doc>
+                                 Identifier of an attribute whose value is sent.
+                              </Doc>
+                              <SimpleType type="integer"/>
+                              <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFF"/>
+                              </Constraints>
+                           </DataType>
+                           <DataType name="Attribute Value">
+                              <Doc>
+                                 Value currently store in the specified attribute.
+                              </Doc>
+                           <SimpleType type="integer"/>
+                        </DataType>
+                        </Struct>
+                     </DataType>
+                  </Arg>
+               </Args>
+            </Action>
+         </Actions>
+
+         <Data>
+            <DataPoint name="Energy"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Energy</em> attribute stores energy consumption from device power up
+                           or from a measurement reset
+                        </Doc>
+
+                        <DataType unitOfMeasure="Watts/Hour">
+                           <Struct>
+                              <DataType name="Precision Code">
+                                 <Doc>
+                                    <em>Precision Code</em> indicates a metric prefix that affects
+                                    the basic unit of measurement.
+                                 </Doc>
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="Possible Values">
+                                       <Doc>
+                                          <em>Precision Code</em> can only take a value from the
+                                          following: 0x00, 0x10, 0x11, 0x12, 0x13, 0x20, 0x21, 0x22
+                                          and 0x23.
+                                       </Doc>
+                                    </Constraint>
+                                 </Constraints>
+                              </DataType>
+                              <DataType name="Energy Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Energy at Last Reset"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Energy at Last Reset</em> stores the <em>Energy</em> value at the
+                            instant a measurement reset occurred (see <em>Measurement Reset</em>
+                            action). It is mandatory if the referred action is implemented.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Watts/Hour">
+                           <Struct>
+                              <DataType name="Precision Code">
+                                 <Doc>
+                                    <em>Precision Code</em> indicates a metric prefix that affects
+                                    the basic unit of measurement.
+                                 </Doc>
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="Possible Values">
+                                       <Doc>
+                                          <em>Precision Code</em> can only take a value from the
+                                          following: 0x00, 0x10, 0x11, 0x12, 0x13, 0x20, 0x21, 0x22
+                                          and 0x23.
+                                       </Doc>
+                                    </Constraint>
+                                 </Constraints>
+                              </DataType>
+                              <DataType name="Energy Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Time at Last Reset"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Time at Last Reset</em> stores the time value (from device uptime
+                            or UTC) at the instant a measurement reset occurred (see
+                            <em>Measurement Reset</em> action). It is mandatory if the referred
+                            action is implemented.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Seconds">
+                           <Struct>
+                              <DataType name="Time Reference">
+                                 <Doc>
+                                    <em>Time Reference</em> indicates the original source from
+                                    which time is measured/referenced.
+                                 </Doc>
+                                 <SimpleType type="boolean"/>
+                              </DataType>
+                              <DataType name="Energy Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Instantaneous Power"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Instantaneous Power</em> stores the presently instantaneous power
+                           value.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Watts">
+                           <Struct>
+                              <DataType name="Precision Code">
+                                 <Doc>
+                                    <em>Precision Code</em> indicates a metric prefix that affects
+                                    the basic unit of measurement.
+                                 </Doc>
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="Possible Values">
+                                       <Doc>
+                                          <em>Precision Code</em> can only take a value from the
+                                          following: 0x00, 0x10, 0x11, 0x12, 0x13, 0x20, 0x21, 0x22
+                                          and 0x23.
+                                       </Doc>
+                                    </Constraint>
+                                 </Constraints>
+                              </DataType>
+                              <DataType name="Power Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Average Power"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Average Power</em> stores the power measured over a period of time
+                            specified by <em>Average Power Interval</em>.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Watts">
+                           <Struct>
+                              <DataType name="Precision Code">
+                                 <Doc>
+                                    <em>Precision Code</em> indicates a metric prefix that affects
+                                    the basic unit of measurement.
+                                 </Doc>
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="Possible Values">
+                                       <Doc>
+                                          <em>Precision Code</em> can only take a value from the
+                                          following: 0x00, 0x10, 0x11, 0x12, 0x13, 0x20, 0x21, 0x22
+                                          and 0x23.
+                                       </Doc>
+                                    </Constraint>
+                                 </Constraints>
+                              </DataType>
+                              <DataType name="Power Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Average Power Interval"
+                       optional="true"
+                       writable="true"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Average Power Interval</em> specifies the time period over which
+                            power should be averaged and stored into <em>Average Power</em>.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Seconds">
+                           <SimpleType type="integer"/>
+                           <Constraints>
+                              <Constraint name="minValue" type="integer" value="0x0000"/>
+                              <Constraint name="maxValue" type="integer" value="0xFFFF"/>
+                           </Constraints>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Voltage"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Voltage</em> stores the presently instantaneous voltage value.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Volts">
+                           <Struct>
+                              <DataType name="Precision Code">
+                                 <Doc>
+                                    <em>Precision Code</em> indicates a metric prefix that affects
+                                    the basic unit of measurement.
+                                 </Doc>
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="Possible Values">
+                                       <Doc>
+                                          <em>Precision Code</em> can only take a value from the
+                                          following: 0x00, 0x10, 0x11, 0x12, 0x13, 0x20, 0x21, 0x22
+                                          and 0x23.
+                                       </Doc>
+                                    </Constraint>
+                                 </Constraints>
+                              </DataType>
+                              <DataType name="Voltage Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Current"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Current</em> stores the presently instantaneous current value.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Amperes">
+                           <Struct>
+                              <DataType name="Precision Code">
+                                 <Doc>
+                                    <em>Precision Code</em> indicates a metric prefix that affects
+                                    the basic unit of measurement.
+                                 </Doc>
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="Possible Values">
+                                       <Doc>
+                                          <em>Precision Code</em> can only take a value from the
+                                          following: 0x00, 0x10, 0x11, 0x12, 0x13, 0x20, 0x21, 0x22
+                                          and 0x23.
+                                       </Doc>
+                                    </Constraint>
+                                 </Constraints>
+                              </DataType>
+                              <DataType name="Current Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Frequency"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Frequency</em> stores the presently instantaneous frequency value.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Hertz">
+                           <Struct>
+                              <DataType name="Precision Code">
+                                 <Doc>
+                                    <em>Precision Code</em> indicates a metric prefix that affects
+                                    the basic unit of measurement.
+                                 </Doc>
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="Possible Values">
+                                       <Doc>
+                                          <em>Precision Code</em> can only take a value from the
+                                          following: 0x00, 0x10, 0x11, 0x12, 0x13, 0x20, 0x21, 0x22
+                                          and 0x23.
+                                       </Doc>
+                                    </Constraint>
+                                 </Constraints>
+                              </DataType>
+                              <DataType name="Frequency Value">
+                                 <SimpleType type="integer"/>
+                                 <Constraints>
+                                    <Constraint name="minValue" type="integer" value="0x00000000"/>
+                                    <Constraint name="maxValue" type="integer" value="0xFFFFFFFF"/>
+                                 </Constraints>
+                              </DataType>
+                           </Struct>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Power Factor"
+                       optional="true"
+                       writable="false"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Power Factor</em> stores the ratio between real and apparent power.
+                        </Doc>
+
+                        <DataType>
+                           <SimpleType type="integer"/>
+                           <Constraints>
+                              <Constraint name="minValue" type="integer" value="0x00"/>
+                              <Constraint name="maxValue" type="integer" value="0xFF"/>
+                           </Constraints>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint name="Report Interval"
+                       optional="true"
+                       writable="true"
+                       readable="true"
+                       eventable="true">
+
+                        <Doc>
+                           <em>Report Interval</em> stores the periodic time interval, in seconds,
+                            at which the <em>Report</em> action should be sent. If set to 0 (zero)
+                            the action will never be. It is mandatory if the referred action is
+                            implemented.
+                        </Doc>
+
+                        <DataType unitOfMeasure="Seconds">
+                           <SimpleType type="integer"/>
+                           <Constraints>
+                              <Constraint name="minValue" type="integer" value="0x0000"/>
+                              <Constraint name="maxValue" type="integer" value="0xFFFF"/>
+                           </Constraints>
+                        </DataType>
+            </DataPoint>
+
+         </Data>
+      </ModuleClass>
+
+<!-- Simple Power Metering Interface: CLIENT -->
+      <ModuleClass name="0x300 - Simple Power Metering Client Interface">
+         <Doc>
+            The <em>Simple Power Metering Client</em> interface enables a device to receive
+            measurements of electric quantities.
+         </Doc>
+
+         <Actions>
+            <Action name="Measurement Reset" optional="true">
+               <Doc>
+                  This optional command sent to a server implementation of the Simple Power
+                   Metering interface, performs the following operations:
+                   * Copy Energy attribute present value into Energy at Last Reset attribute;
+                   * Set Energy attribute to 0 (zero);
+                   * Store device time into Time at Last Reset attribute.
+
+                   Due to the nature of these operations, if this action is implemented then
+                   <em>Energy at Last Reset</em> and <em>Time at Last Reset</em> must also be.
+               </Doc>
+            </Action>
+         </Actions>
+      </ModuleClass>
+
+<!-- Simple Temperature Interface: SERVER -->
+      <ModuleClass name=" 0x301 - Simple Temperature Server Interface">
+         <Doc>
+            The <em>Simple Temperature Server</em> interface enables a device to be able to
+            provide temperature readings.
+         </Doc>
+
+         <Data>
+            <DataPoint  name="Measured Temperature"
+                        optional="false"
+                        writable="false"
+                        readable="true"
+                        eventable="true">
+
+                        <Doc>
+                           <em>Measured Temperature</em> holds the current measured temperature,
+                           in one hundredth (1/100) of Celsius degrees.
+                        </Doc>
+
+                        <DataType unitOfMeasure="One hundredth Celsius">
+                           <SimpleType type="integer"/>
+                              <Constraints>
+                                 <Constraint name="minValue" type="integer" value="-32768"/>
+                                 <Constraint name="maxValue" type="integer" value="+32767"/>
+                              </Constraints>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint  name="Minimum Measureable Temperature"
+                        optional="false"
+                        writable="false"
+                        readable="true"
+                        eventable="true">
+
+                        <Doc>
+                           <em>Minimum Measureable Temperature</em> holds the minimum temperature,
+                           in one hundredth (1/100) of Celsius degrees, that can be measured by the
+                           device.
+                        </Doc>
+
+                        <DataType unitOfMeasure="One hundredth Celsius">
+                           <SimpleType type="integer"/>
+                              <Constraints>
+                                 <Constraint name="minValue" type="integer" value="-32768"/>
+                                 <Constraint name="maxValue" type="integer" value="+32767"/>
+                              </Constraints>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint  name="Maximum Measureable Temperature"
+                        optional="false"
+                        writable="false"
+                        readable="true"
+                        eventable="true">
+
+                        <Doc>
+                           <em>Maximum Measureable Temperature</em> holds the maximum temperature,
+                           in one hundredth (1/100) of Celsius degrees, that can be measured by the
+                           device.
+                        </Doc>
+
+                        <DataType unitOfMeasure="One hundredth Celsius">
+                           <SimpleType type="integer"/>
+                              <Constraints>
+                                 <Constraint name="minValue" type="integer" value="-32768"/>
+                                 <Constraint name="maxValue" type="integer" value="+32767"/>
+                              </Constraints>
+                        </DataType>
+            </DataPoint>
+
+            <DataPoint  name="Tolerance"
+                        optional="false"
+                        writable="false"
+                        readable="true"
+                        eventable="true">
+
+                        <Doc>
+                           <em>Tolerance</em> holds the magnitude, in one hundredth (1/100) of
+                           Celsius degrees of the error associated with <em>Measured Temperature</em>,
+                           which means the actual value is between
+                           (<em>Measured Temperature</em> - <em>Tolerance</em>) and
+                           (<em>Measured Temperature</em> + <em>Tolerance</em>).
+                        </Doc>
+
+                        <DataType unitOfMeasure="One hundredth Celsius">
+                           <SimpleType type="integer"/>
+                              <Constraints>
+                                 <Constraint name="minValue" type="integer" value="0x0000"/>
+                                 <Constraint name="maxValue" type="integer" value="0xFFFF"/>
+                              </Constraints>
+                        </DataType>
+            </DataPoint>
+         </Data>
+      </ModuleClass>
+
+<!-- Simple Temperature Interface: CLIENT -->
+      <ModuleClass name="0x301 - Simple Temperature Client Interface">
+         <Doc>
+            The <em>Simple Temperature Client</em> interface enables a device to be able to
+            receive temperature readings.
+         </Doc>
+      </ModuleClass>
+   </Modules>
+</Domain>
